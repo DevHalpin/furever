@@ -30,7 +30,7 @@ const getAllUsers = () => {
 
 const getUserById = (id) => {
   return db.query("SELECT * FROM users WHERE id = $1;", [id]).then((data) => {
-    return data.rows;
+    return data.rows[0];
   });
 };
 
@@ -57,10 +57,25 @@ const addUser = (username, email, password, firstName, lastName) => {
   });
 };
 
-const editUser = function (id, username, email, password, firstName, lastName, profileUrl) {
-  return bcrypt.hash(password, 10).then((hashedPassword) => {
+const editUser = function (id, username, email, password, newPassword, firstName, lastName, profileUrl) {
+  return getUserById(id)
+  .then((user) => {
+    if (bcrypt.compareSync(password,user.password)) {
+      return bcrypt.hash(newPassword, 10)
+    }
+    throw new Error('Invalid password')
+  })
+  .then((hashedPassword) => {
+    console.log("hashedPassword: ",hashedPassword)
     return db.query('UPDATE users SET username = $1, email = $2, password = $3, first_name = $4, last_name = $5, user_profile_picture = $6 WHERE id = $7 RETURNING *', [username, email, hashedPassword, firstName, lastName,profileUrl, id]);
-  });
+  })
+  .then((user) => {
+    console.log("EditUser", user)
+    return user.rows[0]
+  })
+  .catch((err) => {
+    console.log(err)
+  })
 };
 
 

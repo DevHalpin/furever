@@ -20,10 +20,10 @@ function AuthProvider(props) {
     // console.log('set user',user)
   };
 
-  const register = function (id, username, email, firstName, lastName, password, passwordConfirmation) {
+  const register = function ({id, username, email, first_name, last_name, password, passwordConfirmation}) {
     setAuth(true);
-    setUser({ id, username, email, firstName, lastName });
-    localStorage.setItem("userData",JSON.stringify({ id, username, email, firstName, lastName }))
+    setUser({ id, username, email, firstName: first_name, lastName: last_name });
+    localStorage.setItem("userData",JSON.stringify({ id, username, email, firstName: first_name, lastName: last_name }))
   };
 
   const logout = function () {

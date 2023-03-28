@@ -22,18 +22,19 @@ export default function ProfilePage() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    username: '',
-    email: '',
-    password: '',
-    passwordConfirmation: '',
+    firstName: user ? user.firstName : '',
+    lastName: user ? user.lastName : '',
+    username: user ? user.username : '',
+    email: user ? user.email : '',
+    oldPassword: user ? user.password : '',
+    newPassword: '',
+    confirmPassword: '',
     rememberMe: false,
     error: null,
   });
 
   const handleChange = (event) => {
-    setUser((prevData) => ({
+    setFormData((prevData) => ({
       ...prevData,
       [event.target.name]: event.target.type === 'checkbox' ? event.target.checked : event.target.value,
     }));
@@ -47,7 +48,7 @@ export default function ProfilePage() {
     axios
       .get(`/users/${user.id}`)
       .then((res) => {
-        setUser(res.data.users[0]);
+        setUser(res.data.users);
       })
       .catch((err) => {
         console.log(err);
@@ -102,28 +103,28 @@ export default function ProfilePage() {
                 name="firstName"
                 label="First Name"
                 onChange={handleChange}
-                value={user.first_name}
+                value={formData.firstName}
                 variant="filled"
               />
               <TextField
                 name="lastName"
                 label="Last Name"
                 onChange={handleChange}
-                value={user.last_name}
+                value={formData.lastName}
                 variant="filled"
               />
               <TextField
                 name="username"
                 label="Username"
                 onChange={handleChange}
-                value={user.username}
+                value={formData.username}
                 variant="filled"
               />
               <TextField
                 name="email"
                 label="Email address"
                 onChange={handleChange}
-                value={user.email}
+                value={formData.email}
                 variant="filled"
               />
               <TextField
@@ -132,7 +133,41 @@ export default function ProfilePage() {
                 variant="filled"
                 type={showPassword ? 'text' : 'password'}
                 onChange={handleChange}
-                value={user.password}
+                value={formData.oldPassword}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                        <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <TextField
+                name="newPassword"
+                label="Password"
+                variant="filled"
+                type={showPassword ? 'text' : 'password'}
+                onChange={handleChange}
+                value={formData.newPassword}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                        <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <TextField
+                name="confirmPassword"
+                label="Password"
+                variant="filled"
+                type={showPassword ? 'text' : 'password'}
+                onChange={handleChange}
+                value={formData.confirmPassword}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">

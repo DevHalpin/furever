@@ -17,17 +17,18 @@ router.get("/:id", (req, res) => {
 });
 
 router.post("/:id", (req, res) => {
-  const { username, email, firstName, lastName, password, profileUrl } = req.body;
+  console.log(req.body)
+  const { username, email, firstName, lastName, password, newPassword, profileUrl } = req.body;
 
   users
     .getUserById(req.params.id)
     .then((userExists) => {
-        return users.editUser(req.params.id, username, email, password, firstName, lastName, profileUrl);
+        return users.editUser(req.params.id, username, email, password, newPassword, firstName, lastName, profileUrl);
       
     })
     .then((user) => {
-      const updatedUser = user.rows[0];
-      console.log('User updated:', updatedUser);
+      console.log('User updated:', user);
+      const updatedUser = user;
       return res.status(200).send({ user: updatedUser, message: 'User successfully updated' });
     })
     .catch((error) => {
